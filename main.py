@@ -1,4 +1,4 @@
-from statcast.update import update_statcast
+from statcast import update_statcast
 import datetime
 
 
