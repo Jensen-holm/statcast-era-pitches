@@ -1,0 +1,2 @@
+polars==1.9.0
+pybaseball==2.2.7

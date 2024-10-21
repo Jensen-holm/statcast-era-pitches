@@ -1,0 +1,106 @@
+import polars as pl
+
+
+# statcast data types: https://baseballsavant.mlb.com/csv-docs
+__all__ = [
+    "DATE_FEATURES",
+    "STRING_FEATURES",
+    "FLOAT_FEATURES",
+    "INT_FEATURES",
+    "STATCAST_SCHEMA",
+]
+
+DATE_FEATURES = {
+    "game_date": pl.Date,
+}
+
+STRING_FEATURES = {
+    "pitch_type": pl.String,
+    "game_type": pl.String,
+    "p_throws": pl.String,
+    "stand": pl.String,
+    "home_team": pl.String,
+    "away_team": pl.String,
+    "description": pl.String,
+    "des": pl.String,
+    "events": pl.String,
+    "type": pl.String,
+    "if_fielding_alignment": pl.String,
+    "of_fielding_alignment": pl.String,
+    "sv_id": pl.String,
+}
+
+FLOAT_FEATURES = {
+    "bat_speed": pl.Float64,
+    "swing_length": pl.Float64,
+    "release_speed": pl.Float64,
+    "release_pos_x": pl.Float64,
+    "release_pos_y": pl.Float64,
+    "release_pos_z": pl.Float64,
+    "spin_rate": pl.Float64,
+    "release_spin": pl.Float64,
+    "break_angle": pl.Float64,
+    "zone": pl.Int64,
+    "hit_location": pl.Float64,
+    "pfx_x": pl.Float64,
+    "pfx_z": pl.Float64,
+    "plate_x": pl.Float64,
+    "plate_z": pl.Float64,
+    "inning": pl.Float64,
+    "vx0": pl.Float64,
+    "vy0": pl.Float64,
+    "vz0": pl.Float64,
+    "ax": pl.Float64,
+    "ay": pl.Float64,
+    "az": pl.Float64,
+    "sz_top": pl.Float64,
+    "sz_bot": pl.Float64,
+    "hit_distance": pl.Float64,
+    "launch_speed": pl.Float64,
+    "launch_angle": pl.Float64,
+    "launch_speed_angle": pl.Float64,
+    "effective_speed": pl.Float64,
+    "release_spin": pl.Float64,
+    "release_extension": pl.Float64,
+    "release_pos_y": pl.Float64,
+    "estimated_ba_using_speedangle": pl.Float64,
+    "estimated_woba_using_speedangle": pl.Float64,
+    "woba_value": pl.Float64,
+    "woba_denom": pl.Float64,
+    "babip_value": pl.Float64,
+    "iso_value": pl.Float64,
+    "spin_axis": pl.Int64,
+    "delta_home_win_exp": pl.Float64,
+    "delta_run_exp": pl.Float64,
+}
+
+INT_FEATURES = {
+    "balls": pl.Int64,
+    "strikes": pl.Int64,
+    "outs_when_up": pl.Int64,
+    "batter": pl.Int64,
+    "pitcher": pl.Int64,
+    "game_year": pl.Int64,
+    "on_3b": pl.Int64,
+    "on_2b": pl.Int64,
+    "on_1b": pl.Int64,
+    "game_pk": pl.Int64,
+    "fielder_2": pl.Int64,
+    "fielder_3": pl.Int64,
+    "fielder_4": pl.Int64,
+    "fielder_5": pl.Int64,
+    "fielder_6": pl.Int64,
+    "fielder_7": pl.Int64,
+    "fielder_8": pl.Int64,
+    "fielder_9": pl.Int64,
+    "at_bat_number": pl.Int64,
+    "pitch_number": pl.Int64,
+    "home_score": pl.Int64,
+    "away_score": pl.Int64,
+    "bat_score": pl.Int64,
+    "post_home_score": pl.Int64,
+    "post_away_score": pl.Int64,
+    "post_bat_score": pl.Int64,
+}
+
+STATCAST_SCHEMA = FLOAT_FEATURES | INT_FEATURES | DATE_FEATURES | STRING_FEATURES
