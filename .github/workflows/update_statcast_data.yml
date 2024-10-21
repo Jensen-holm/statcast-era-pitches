@@ -3,6 +3,7 @@ name: Update Statcast Data
 on:
   schedule:
     - cron: '0 0 * * 0'  # Run every Sunday at midnight UTC
+  workflow_dispatch:
 
 jobs:
   update_data:
