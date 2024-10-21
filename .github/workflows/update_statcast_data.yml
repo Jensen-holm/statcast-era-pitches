@@ -27,12 +27,3 @@ jobs:
 
     - name: Install Hugging Face CLI
       run: pip install huggingface_hub
-
-    - name: Configure Hugging Face CLI
-      env:
-        HF_TOKEN: ${{ secrets.HF_TOKEN }}
-      run: huggingface-cli login --token $HF_TOKEN
-
-    - name: Push updated data to Hugging Face
-      run: |
-        huggingface-cli upload Jensen-holm/statcast-era-pitches data/updated_statcast_pitches.parquet

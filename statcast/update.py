@@ -18,6 +18,7 @@ def update_statcast(date: datetime.date) -> pl.DataFrame:
     latest_date = old_df["game_date"].sort(descending=True)[0].date()
     if latest_date == date:
         print("No Updates Needed")
+        old_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
         return old_df
 
     new_df = pl.from_pandas(
@@ -26,7 +27,7 @@ def update_statcast(date: datetime.date) -> pl.DataFrame:
             end_dt=date.strftime("%Y-%m-%d"),
         ),
         schema_overrides=STATCAST_SCHEMA,
-    )
+    ).with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
 
     updated_df = pl.concat([old_df, new_df])
     updated_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
