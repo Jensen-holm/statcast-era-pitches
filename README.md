@@ -6,7 +6,6 @@ The point of this repository is to utilize GitHub Actions to scrape new baseball
 
 The `main.py` script updates each week during the MLB season, updating the [statcast-era-pitches HuggingFace Dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) so that you don't have to re scrape this data yourself. 
 
----
 # Usage
 
 ***Pandas***
@@ -23,6 +22,13 @@ df = pd.read_parquet("hf://datasets/Jensen-holm/statcast-era-pitches/data/statca
 import polars as pl
 
 df = pl.read_parquet('hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet')
+```
+
+***Duckdb***
+
+```sql
+SELECT *
+FROM 'hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet';
 ```
 
 ***HuggingFace Dataset***
@@ -43,3 +49,7 @@ statcast_pitches <- read_parquet(
 ```
 
 see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) on HugingFace itself for more details. 
+
+## Benchmarking
+
+![dataset_load_times](dataset_load_times.png)
