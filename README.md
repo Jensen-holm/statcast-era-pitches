@@ -53,3 +53,10 @@ see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitch
 ## Benchmarking
 
 ![dataset_load_times](dataset_load_times.png)
+
+| Load Time (s)	| API |
+|---------------|-----|
+| 1421.103 | pybaseball |
+| 26.899 | polars |
+| 33.09332203865051 | pandas |
+| 68.69287300109863	| duckdb |
