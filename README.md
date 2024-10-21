@@ -9,28 +9,35 @@ The `main.py` script updates each week during the MLB season, updating the [stat
 ---
 # Usage
 
-***Tidyverse***
-```r
-library(tidyverse)
-statcast_pitches <- read_parquet(
-    "https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/resolve/main/data/statcast_era_pitches.parquet"
-)
-```
-
 ***Pandas***
 
 ```python
 import pandas as pd
-statcast_pitches = pd.read_parquet(
-    "https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/resolve/main/data/statcast_era_pitches.parquet"
-)
+
+df = pd.read_parquet("hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet")
 ```
 
 ***Polars***
 
 ```python
 import polars as pl
-statcast_pitches = pl.read_parquet(
+
+df = pl.read_parquet('hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet')
+```
+
+***HuggingFace Dataset***
+
+```python
+from datasets import load_dataset
+
+ds = load_dataset("Jensen-holm/statcast-era-pitches")
+```
+
+***Tidyverse***
+```r
+library(tidyverse)
+
+statcast_pitches <- read_parquet(
     "https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/resolve/main/data/statcast_era_pitches.parquet"
 )
 ```
