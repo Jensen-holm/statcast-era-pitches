@@ -6,6 +6,8 @@ The point of this repository is to utilize GitHub Actions to scrape new baseball
 
 The `main.py` script updates each week during the MLB season, updating the [statcast-era-pitches HuggingFace Dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) so that you don't have to re scrape this data yourself. 
 
+You can explore the entire dataset in your browser [at this link](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/viewer/default/train)
+
 # Usage
 
 ***Pandas***
