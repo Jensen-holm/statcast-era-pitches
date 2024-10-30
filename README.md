@@ -12,6 +12,46 @@ You can explore the entire dataset in your browser [at this link](https://huggin
 
 # Usage
 
+### With statcast_pitches package
+
+```bash
+pip install git+https://github.com/Jensen-holm/statcast-era-pitches.git
+```
+
+```python
+import statcast_pitches
+
+# get bat tracking data from 2024
+query_2024_bat_speed = f"""
+    SELECT bat_speed, swing_length
+    FROM pitches
+    WHERE 
+        YEAR(game_date) = '2024'
+        AND bat_speed IS NOT NULL;
+    """
+
+if __name__ == "__main__":
+    bat_speed_24_df = statcast_pitches.load(
+        query=query_2024_bat_speed, 
+        pandas=True, # default is polars
+    )
+
+    print(bat_speed_24_df.head(3))
+```
+
+output: 
+| | bat_speed  | swing_length |
+|-|------------|--------------|
+| 0 | 73.61710 | 6.92448 |
+| 1 | 58.63812 | 7.56904 |
+| 2 | 71.71226 | 6.46088 |
+
+**Notes**:
+- If no query is specified, all data from 2015-present will be loaded into a DataFrame.
+- The table in your query MUST be called 'pitches', or it will fail.
+
+### With HuggingFace API
+
 ***Pandas***
 
 ```python

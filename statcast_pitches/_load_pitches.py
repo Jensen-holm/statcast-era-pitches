@@ -21,7 +21,7 @@ def _load_all_pandas() -> pd.DataFrame:
     return pd.read_parquet(HF_DATASET_LOC)
 
 
-def load(query: Optional[str], pandas: bool = False) -> DataLike:
+def load(query: Optional[str] = None, pandas: bool = False) -> DataLike:
     """
     Returns a DataFrame object (either polars or pandas) containing statcast pitch data
 
