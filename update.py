@@ -4,8 +4,8 @@ import pybaseball
 import datetime
 import os
 
-from utils import LOCAL_STATCAST_DATA_LOC, HF_DATASET_LOC
-from schema import STATCAST_SCHEMA
+from update.utils import LOCAL_STATCAST_DATA_LOC, HF_DATASET_LOC
+from update.schema import STATCAST_SCHEMA
 
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
@@ -31,6 +31,9 @@ def update_statcast(date: datetime.date) -> pl.DataFrame:
         ),
         schema_overrides=STATCAST_SCHEMA,
     ).with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+
+    assert STATCAST_SCHEMA == old_df.collect_schema()
+    assert STATCAST_SCHEMA == new_df.collect_schema()
 
     updated_df = pl.concat([old_df, new_df])
     updated_df.write_parquet(LOCAL_STATCAST_DATA_LOC)

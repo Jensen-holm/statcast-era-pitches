@@ -4,7 +4,7 @@ import polars as pl
 # statcast data types: https://baseballsavant.mlb.com/csv-docs
 __all__ = ["STATCAST_SCHEMA"]
 
-DATE_FEATURES = {"game_date": pl.Date}
+DATE_FEATURES = {"game_date": pl.Datetime}
 
 STRING_FEATURES = {
     col: pl.String
@@ -23,6 +23,9 @@ STRING_FEATURES = {
         "if_fielding_alignment",
         "of_fielding_alignment",
         "sv_id",
+        "game_type",
+        "inning_topbot",
+        "pitch_name",
     ]
 }
 
@@ -30,16 +33,14 @@ STRING_FEATURES = {
 FLOAT_FEATURES = {
     col: pl.Float64
     for col in [
+        "hc_x",
+        "hc_y",
         "bat_speed",
-        "break_length_deprecated",
-        "break_angle_deprecated",
         "swing_length",
         "release_speed",
         "release_pos_x",
         "release_pos_y",
         "release_pos_z",
-        "release_spin",
-        "break_angle",
         "hit_location",
         "pfx_x",
         "pfx_z",
@@ -54,12 +55,10 @@ FLOAT_FEATURES = {
         "az",
         "sz_top",
         "sz_bot",
-        "hit_distance",
         "launch_speed",
         "launch_angle",
         "launch_speed_angle",
         "effective_speed",
-        "release_spin",
         "release_extension",
         "release_pos_y",
         "estimated_ba_using_speedangle",
@@ -70,8 +69,6 @@ FLOAT_FEATURES = {
         "iso_value",
         "delta_home_win_exp",
         "delta_run_exp",
-        "tfs_deprecated",
-        "tfs_zulu_deprecated",
     ]
 }
 
@@ -79,6 +76,7 @@ FLOAT_FEATURES = {
 INT_FEATURES = {
     col: pl.Int64
     for col in [
+        "hit_distance_sc",
         "balls",
         "strikes",
         "outs_when_up",
@@ -99,6 +97,9 @@ INT_FEATURES = {
         "fielder_9",
         "at_bat_number",
         "pitch_number",
+        "fld_score",
+        "fielder_2.1",
+        "pitcher.1",
         "home_score",
         "away_score",
         "bat_score",
@@ -111,6 +112,15 @@ INT_FEATURES = {
         "post_fld_score",
         "post_away_score",
         "post_home_score",
+        "release_spin_rate",
+        "spin_dir",
+        "umpire",
+        # deprecated, all nulls
+        "spin_rate_deprecated",
+        "break_length_deprecated",
+        "break_angle_deprecated",
+        "tfs_deprecated",
+        "tfs_zulu_deprecated",
     ]
 }
 

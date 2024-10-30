@@ -12,8 +12,7 @@ def test_load_all() -> None:
     df = statcast_pitches.load()
 
     assert isinstance(df, pl.DataFrame)
-    for col, dtype in STATCAST_SCHEMA.items():
-        assert df[col].dtype == dtype, f"{col} schema does not match"
+    assert STATCAST_SCHEMA == df.collect_schema()
 
 
 def test_load_query() -> None:
