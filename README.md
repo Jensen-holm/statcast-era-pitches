@@ -62,5 +62,5 @@ see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitch
 |---------------|-----|
 | 1421.103 | pybaseball |
 | 26.899 | polars |
-| 33.09332203865051 | pandas |
-| 68.69287300109863	| duckdb |
+| 33.093 | pandas |
+| 68.692	| duckdb |
