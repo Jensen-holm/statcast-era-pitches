@@ -1,4 +1,4 @@
-from typing import TypeAlias, Optional
+from typing import TypeAlias, Optional, Tuple
 
 import polars as pl
 import pandas as pd
@@ -21,7 +21,9 @@ def _load_all_pandas() -> pd.DataFrame:
     return pd.read_parquet(HF_DATASET_LOC)
 
 
-def load(query: Optional[str] = None, pandas: bool = False) -> DataLike:
+def load(
+    query: Optional[str] = None, params: Optional[Tuple] = None, pandas: bool = False
+) -> DataLike:
     """
     Returns a DataFrame object (either polars or pandas) containing statcast pitch data
 
@@ -40,14 +42,21 @@ def load(query: Optional[str] = None, pandas: bool = False) -> DataLike:
         example :
             import statcast_pitches
 
+            params = ("2024",)
             query = f'''
                 SELECT bat_speed, swing_length
                 FROM pitches
-                WHERE YEAR(game_date) = '2024'
+                WHERE YEAR(game_date) =?
                     AND bat_speed IS NOT NULL;
-                '''
+            '''
 
-            swing_data_24_df = statcast_pitches.load(query=query)
+            swing_data_24_df = statcast_pitches.load(
+                query=query,
+                params=params,
+            )
+
+    params : Tuple
+        if you specify a query, and your query is expecting parameters, this is where you put them.
     """
     if query is None:
         return _load_all_polars() if not pandas else _load_all_pandas()
@@ -55,5 +64,5 @@ def load(query: Optional[str] = None, pandas: bool = False) -> DataLike:
     with duckdb.connect() as con:
         _ = con.execute(INSTALL_DB_REQS_QUERY)
         _ = con.execute(REGISTER_QUERY)
-        result = con.sql(query=query)
+        result = con.sql(query=query, params=params)
         return result.pl() if not pandas else result.df()

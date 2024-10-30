@@ -16,15 +16,19 @@ def test_load_all() -> None:
 
 
 def test_load_query() -> None:
+    params = ("2024",)
     test_query = f"""
         SELECT game_date, bat_speed, swing_length
         FROM pitches
         WHERE
-            YEAR(game_date) = '2024'
+            YEAR(game_date) =?
             AND bat_speed IS NOT NULL;
-        """
+    """
 
-    df = statcast_pitches.load(query=test_query)
+    df = statcast_pitches.load(
+        query=test_query,
+        params=params,
+    )
 
     assert isinstance(df, pl.DataFrame)
     assert len(df.columns) == 3
