@@ -32,3 +32,8 @@ HuggingFaceDataset = "https://huggingface.com/Jensen-holm/statcast-era-pitches"
 
 [tool.hatch.build.targets.wheel]
 packages = ["statcast_pitches"]
+
+[tools.setuptools.packages.find]
+include = ["statcast_pitches*"]
+exclude = ["tests*", "update*", "tests*"]
+

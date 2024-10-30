@@ -3,3 +3,4 @@ huggingface_hub==0.26.2
 pandas==2.2.3
 polars==1.12.0
 pybaseball==2.2.7
+pytest
