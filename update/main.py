@@ -1,15 +1,18 @@
+from huggingface_hub import HfApi
 import polars as pl
 import pybaseball
 import datetime
-import warnings
+import os
 
-# pybaseball has some pandas future warnings that get annoying
-warnings.simplefilter("ignore", FutureWarning)
+from utils import LOCAL_STATCAST_DATA_LOC, HF_DATASET_LOC
+from schema import STATCAST_SCHEMA
 
-from .schema import STATCAST_SCHEMA
-from .utils import LOCAL_STATCAST_DATA_LOC, HF_DATASET_LOC
 
-__all__ = ["update_statcast"]
+HF_TOKEN = os.environ.get("HF_TOKEN")
+
+
+def yesterday() -> datetime.date:
+    return datetime.datetime.now().date() - datetime.timedelta(days=1)
 
 
 def update_statcast(date: datetime.date) -> pl.DataFrame:
@@ -34,3 +37,18 @@ def update_statcast(date: datetime.date) -> pl.DataFrame:
 
     print(f"Saved New Statcast Data from {latest_date} to {date}")
     return updated_df
+
+
+def upload_to_hf() -> None:
+    api = HfApi(token=HF_TOKEN)
+    api.upload_file(
+        path_or_fileobj=LOCAL_STATCAST_DATA_LOC,
+        path_in_repo="data/statcast_era_pitches.parquet",
+        repo_id="Jensen-holm/statcast-era-pitches",
+        repo_type="dataset",
+    )
+
+
+if __name__ == "__main__":
+    _ = update_statcast(date=yesterday())
+    _ = upload_to_hf()
