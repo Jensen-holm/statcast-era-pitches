@@ -9,4 +9,6 @@ LOCAL_STATCAST_DATA_LOC = os.path.join(
     "statcast_era_pitches.parquet",
 )
 
-HF_DATASET_LOC = "https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/resolve/main/data/statcast_era_pitches.parquet"
+HF_DATASET_LOC = (
+    "hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet"
+)
