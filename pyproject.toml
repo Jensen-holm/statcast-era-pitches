@@ -1,0 +1,41 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "statcast_pitches"
+version = "0.1.0"
+description = "A package for loading MLB Statcast pitch data quickly using HF Dataset"
+readme = "README.md"
+requires-python = ">=3.10"
+license = "MIT"
+authors = [
+    { name = "Jensen Holm", email = "jensenh87@gmail.com" }
+]
+keywords = ["baseball", "statcast", "mlb", "data"]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Science/Research",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Topic :: Scientific/Engineering :: Information Analysis",
+]
+dependencies = [
+    "polars",
+    "pandas",
+    "duckdb",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest",
+    "build",
+    "twine",
+]
+
+[project.urls]
+Repository = "https://github.com/Jensen-holm/statcast-era-pitches"
+
+[tool.hatch.build.targets.wheel]
+packages = ["statcast_pitches"]
