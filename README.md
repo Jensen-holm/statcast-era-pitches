@@ -18,6 +18,25 @@ You can explore the entire dataset in your browser [at this link](https://huggin
 pip install git+https://github.com/Jensen-holm/statcast-era-pitches.git
 ```
 
+**Example 1 w/ polars (suggested)**
+```python
+import statcast_pitches
+import polars as pl
+
+# load all pitches from 2015-present
+pitches_lf = statcast_pitches.load()
+
+# filter to get 2024 bat speed data
+bat_speed_24_df = (pitches_lf
+                    .filter(pl.col("game_date").dt.year() == 2024)
+                    .select("bat_speed", "swing_length")
+                    .collect())
+```
+
+**Notes**
+- Because `statcast_pitches.load()` uses a LazyFrame, we can load it much faster and even perform operations on it before 'collecting' it into memory. If it were loaded as a DataFrame, this code would execute in ~30-60 seconds, instead it runs between 2-8 seconds. 
+
+**Example 2 Duckdb**
 ```python
 import statcast_pitches
 
@@ -51,6 +70,7 @@ output:
 - If no query is specified, all data from 2015-present will be loaded into a DataFrame.
 - The table in your query MUST be called 'pitches', or it will fail.
 - Since `load()` returns a LazyFrame, notice that I had to call `pl.DataFrame.collect()` before calling `head()`
+- This is slower than the other polars approach, however sometimes using SQL is fun
 
 ### With HuggingFace API
 
@@ -96,7 +116,7 @@ statcast_pitches <- read_parquet(
 
 see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) on HugingFace itself for more details. 
 
-## Benchmarking
+## Eager Benchmarking
 
 ![dataset_load_times](dataset_load_times.png)
 
