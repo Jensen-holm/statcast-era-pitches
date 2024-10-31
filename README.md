@@ -35,7 +35,7 @@ if __name__ == "__main__":
     bat_speed_24_df = statcast_pitches.load(
         query=query_2024_bat_speed,
         params=params,
-    )
+    ).collect()
 
     print(bat_speed_24_df.head(3))
 ```
@@ -50,6 +50,7 @@ output:
 **Notes**:
 - If no query is specified, all data from 2015-present will be loaded into a DataFrame.
 - The table in your query MUST be called 'pitches', or it will fail.
+- Since `load()` returns a LazyFrame, notice that I had to call `pl.DataFrame.collect()` before calling `head()`
 
 ### With HuggingFace API
 
@@ -99,9 +100,9 @@ see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitch
 
 ![dataset_load_times](dataset_load_times.png)
 
-| Load Time (s)	| API |
+| Eager Load Time (s) | API |
 |---------------|-----|
 | 1421.103 | pybaseball |
 | 26.899 | polars |
 | 33.093 | pandas |
-| 68.692	| duckdb |
+| 68.692 | duckdb |
