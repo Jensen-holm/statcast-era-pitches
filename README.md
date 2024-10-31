@@ -22,18 +22,19 @@ pip install git+https://github.com/Jensen-holm/statcast-era-pitches.git
 import statcast_pitches
 
 # get bat tracking data from 2024
+params = ("2024",)
 query_2024_bat_speed = f"""
     SELECT bat_speed, swing_length
     FROM pitches
     WHERE 
-        YEAR(game_date) = '2024'
+        YEAR(game_date) =?
         AND bat_speed IS NOT NULL;
     """
 
 if __name__ == "__main__":
     bat_speed_24_df = statcast_pitches.load(
-        query=query_2024_bat_speed, 
-        pandas=True, # default is polars
+        query=query_2024_bat_speed,
+        params=params,
     )
 
     print(bat_speed_24_df.head(3))

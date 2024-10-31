@@ -6,10 +6,10 @@ HF_DATASET_LOC = (
 INSTALL_DB_REQS_QUERY = """
     INSTALL httpfs;
     LOAD httpfs;
-    """
+"""
 
 
 REGISTER_QUERY = f"""
     CREATE VIEW pitches AS 
     SELECT * FROM parquet_scan('{HF_DATASET_LOC}');
-    """
+"""

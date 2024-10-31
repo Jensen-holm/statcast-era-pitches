@@ -15,7 +15,6 @@ authors = [
 keywords = ["baseball", "statcast", "mlb", "data"]
 dependencies = [
     "polars",
-    "pandas",
     "duckdb",
     "pyarrow",
 ]
