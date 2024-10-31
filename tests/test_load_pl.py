@@ -8,10 +8,10 @@ import statcast_pitches
 from update.schema import STATCAST_SCHEMA
 
 
-def test_load_all() -> None:
+def test_load_all_eager() -> None:
     df = statcast_pitches.load()
 
-    assert isinstance(df, pl.DataFrame)
+    assert isinstance(df, pl.LazyFrame)
     assert STATCAST_SCHEMA == df.collect_schema()
 
 
@@ -30,8 +30,10 @@ def test_load_query() -> None:
         params=params,
     )
 
-    assert isinstance(df, pl.DataFrame)
+    assert isinstance(df, pl.LazyFrame)
     assert len(df.columns) == 3
+
+    df = df.collect()
     assert all(df["bat_speed"].is_not_null())
     assert all(df["swing_length"].is_not_null())
     assert all(df["game_date"].dt.year() == "2024")
