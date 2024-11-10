@@ -7,7 +7,7 @@ name = "statcast_pitches"
 version = "0.1.0"
 description = "A package for loading MLB Statcast pitch data quickly using HF Dataset"
 readme = "README.md"
-requires-python = ">=3.10"
+requires-python = ">=3.8"
 license = "MIT"
 authors = [
     { name = "Jensen Holm", email = "jensenh87@gmail.com" }
@@ -36,4 +36,3 @@ packages = ["statcast_pitches"]
 [tools.setuptools.packages.find]
 include = ["statcast_pitches*"]
 exclude = ["tests*", "update*", "tests*"]
-
