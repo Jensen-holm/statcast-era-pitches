@@ -69,6 +69,7 @@ FLOAT_FEATURES = {
         "iso_value",
         "delta_home_win_exp",
         "delta_run_exp",
+        # "arm_angle",
     ]
 }
 

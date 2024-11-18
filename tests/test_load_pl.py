@@ -31,7 +31,7 @@ def test_load_query() -> None:
     )
 
     assert isinstance(df, pl.LazyFrame)
-    assert len(df.columns) == 3
+    assert len(df.collect_schema().names()) == 3
 
     df = df.collect()
     assert all(df["bat_speed"].is_not_null())
