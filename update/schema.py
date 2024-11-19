@@ -69,7 +69,16 @@ FLOAT_FEATURES = {
         "iso_value",
         "delta_home_win_exp",
         "delta_run_exp",
-        # "arm_angle",
+        # new with arm angle update
+        "arm_angle",
+        "api_break_x_batter_in",
+        "api_break_x_arm",
+        "api_break_z_with_gravity",
+        "bat_win_exp",
+        "home_win_exp",
+        "hyper_speed",
+        "delta_pitcher_run_exp",
+        "estimated_slg_using_speedangle",
     ]
 }
 
@@ -116,6 +125,19 @@ INT_FEATURES = {
         "release_spin_rate",
         "spin_dir",
         "umpire",
+        # new with arm angle update
+        "batter_days_until_next_game",
+        "pitcher_days_until_next_game",
+        "batter_days_since_prev_game",
+        "pitcher_days_since_prev_game",
+        "n_priorpa_thisgame_player_at_bat",
+        "n_thruorder_pitcher",
+        "age_bat",
+        "age_pit",
+        "age_bat_legacy",
+        "age_pit_legacy",
+        "bat_score_diff",
+        "home_score_diff",
         # deprecated, all nulls
         "spin_rate_deprecated",
         "break_length_deprecated",
