@@ -32,22 +32,8 @@ def update_statcast(date: datetime.date) -> pl.DataFrame:
         schema_overrides=STATCAST_SCHEMA,
     ).with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
 
-    # assert STATCAST_SCHEMA == old_df.collect_schema(), f"old_df has different schema: {old_df.collect_schema()}"
-    # assert STATCAST_SCHEMA == new_df.collect_schema(), f"new_df has different schema: {new_df.collect_schema()}"
-
     updated_df = pl.concat([old_df, new_df], how="diagonal_relaxed")
     updated_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
-    print(updated_df.select(
-        "arm_angle",
-        "api_break_x_batter_in",
-        "api_break_x_arm",
-        "api_break_z_with_gravity",
-        "bat_win_exp",
-        "home_win_exp",
-        "hyper_speed",
-        "delta_pitcher_run_exp",
-        "estimated_slg_using_speedangle",
-    ))
 
     print(f"Saved New Statcast Data from {latest_date} to {date}")
     return updated_df
