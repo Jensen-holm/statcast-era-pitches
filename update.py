@@ -8,6 +8,12 @@ import os
 from update.utils import LOCAL_STATCAST_DATA_LOC, HF_DATASET_LOC
 from update.schema import STATCAST_SCHEMA
 
+# pybaesball has some pandas code that generates some warnings.
+# why should I pay for the sins of pybaseball?
+import warnings
+
+warnings.filterwarnings("ignore")
+
 
 HF_TOKEN = os.environ.get("HF_TOKEN")
 
@@ -16,23 +22,26 @@ def yesterday() -> datetime.date:
     return datetime.datetime.now().date() - datetime.timedelta(days=1)
 
 
-def refresh_statcast() -> pl.DataFrame:
+def refresh_statcast() -> int:
     """Completley refreshed the hugging face dataset"""
-    new_df = pl.from_pandas(
-        pybaseball.statcast(
-            start_dt="2015-04-05",
-            end_dt=yesterday().isoformat(),
-        ),
-        schema_overrides=STATCAST_SCHEMA,
-    ).with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+    _ = (
+        pl.from_pandas(
+            pybaseball.statcast(
+                start_dt="2015-04-05",
+                end_dt=yesterday().isoformat(),
+            ),
+            schema_overrides=STATCAST_SCHEMA,
+        )
+        .with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+        .write_parquet(LOCAL_STATCAST_DATA_LOC)
+    )
 
-    new_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
-    return new_df
+    if not os.path.exists(LOCAL_STATCAST_DATA_LOC):
+        return 1
+    return 0
 
 
-def update_statcast(
-    date: datetime.date, refresh: bool = False
-) -> Optional[pl.DataFrame]:
+def update_statcast(date: datetime.date, refresh: bool = False) -> int:
     """Updates the statcast DataFrame with data from last date, to the date argument"""
     if refresh:
         return refresh_statcast()
@@ -48,7 +57,8 @@ def update_statcast(
     )
 
     if latest_date == date or date.month in {12, 1, 2}:
-        return print(f"No updates needed for {date}")
+        print(f"No updates needed for {date}")
+        return 1
 
     new_df = pl.from_pandas(
         pybaseball.statcast(
@@ -62,7 +72,7 @@ def update_statcast(
     updated_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
 
     print(f"Saved New Statcast Data from {latest_date} to {date}")
-    return updated_df
+    return 0
 
 
 def upload_to_hf() -> None:
@@ -94,5 +104,6 @@ if __name__ == "__main__":
         help="if refresh is false, then this program will check for new data up to this date",
     )
 
-    if update_statcast(**parser.parse_args().__dict__) is not None:
+    # if it runs without errors (if there was a problem, this fn returns 1, else 0)
+    if not update_statcast(**parser.parse_args().__dict__):
         _ = upload_to_hf()
