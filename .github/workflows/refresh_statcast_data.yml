@@ -1,9 +1,9 @@
-name: Update Statcast Data
+name: Refresh Statcast Data
 
 on:
   schedule:
-    # run every day during MLB season months at 12:00 PM ET
-    - cron: '0 17 * 3-11 *'
+    # run every Monday at 12:00 PM ET
+    - cron: '0 17 * * 1'
   workflow_dispatch:
 
 jobs:
@@ -24,4 +24,4 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install -r update_requirements.txt
-        python update.py
+        python update.py -refresh 1

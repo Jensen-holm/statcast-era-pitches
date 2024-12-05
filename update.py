@@ -1,4 +1,5 @@
 from huggingface_hub import HfApi
+from typing import Optional
 import polars as pl
 import pybaseball
 import datetime
@@ -15,14 +16,39 @@ def yesterday() -> datetime.date:
     return datetime.datetime.now().date() - datetime.timedelta(days=1)
 
 
-def update_statcast(date: datetime.date) -> pl.DataFrame:
+def refresh_statcast() -> pl.DataFrame:
+    """Completley refreshed the hugging face dataset"""
+    new_df = pl.from_pandas(
+        pybaseball.statcast(
+            start_dt="2015-04-05",
+            end_dt=yesterday().isoformat(),
+        ),
+        schema_overrides=STATCAST_SCHEMA,
+    ).with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+
+    new_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
+    return new_df
+
+
+def update_statcast(
+    date: datetime.date, refresh: bool = False
+) -> Optional[pl.DataFrame]:
     """Updates the statcast DataFrame with data from last date, to the date argument"""
-    old_df = pl.read_parquet(HF_DATASET_LOC)
-    latest_date = old_df["game_date"].sort(descending=True)[0].date()
-    if latest_date == date:
-        print("No Updates Needed")
-        old_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
-        return old_df
+    if refresh:
+        return refresh_statcast()
+
+    old_df = pl.scan_parquet(HF_DATASET_LOC)
+    latest_date = (
+        old_df.select("game_date")
+        .sort(by="game_date", descending=True)
+        .slice(0, 1)
+        .collect()
+        .item()
+        .date()
+    )
+
+    if latest_date == date or date.month in {12, 1, 2}:
+        return print(f"No updates needed for {date}")
 
     new_df = pl.from_pandas(
         pybaseball.statcast(
@@ -32,7 +58,7 @@ def update_statcast(date: datetime.date) -> pl.DataFrame:
         schema_overrides=STATCAST_SCHEMA,
     ).with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
 
-    updated_df = pl.concat([old_df, new_df], how="diagonal_relaxed")
+    updated_df = pl.concat([old_df.collect(), new_df], how="diagonal_relaxed")
     updated_df.write_parquet(LOCAL_STATCAST_DATA_LOC)
 
     print(f"Saved New Statcast Data from {latest_date} to {date}")
@@ -50,5 +76,23 @@ def upload_to_hf() -> None:
 
 
 if __name__ == "__main__":
-    _ = update_statcast(date=yesterday())
-    _ = upload_to_hf()
+    from argparse import ArgumentParser
+
+    parser = ArgumentParser()
+
+    parser.add_argument(
+        "-refresh",
+        type=bool,
+        default=False,
+        help="whether or not to refresh the data base by reloading all statcast data",
+    )
+
+    parser.add_argument(
+        "-date",
+        type=datetime.date.fromisoformat,
+        default=yesterday(),
+        help="if refresh is false, then this program will check for new data up to this date",
+    )
+
+    if update_statcast(**parser.parse_args().__dict__) is not None:
+        _ = upload_to_hf()
