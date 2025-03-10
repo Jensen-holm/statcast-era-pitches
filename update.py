@@ -1,5 +1,4 @@
 from huggingface_hub import HfApi
-from typing import Optional
 import polars as pl
 import pybaseball
 import datetime
@@ -32,7 +31,8 @@ def refresh_statcast() -> int:
             ),
             schema_overrides=STATCAST_SCHEMA,
         )
-        .with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+        # .with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+        .with_columns(pl.col("game_date").cast(pl.Date).alias("game_date"))
         .write_parquet(LOCAL_STATCAST_DATA_LOC)
     )
 
@@ -66,7 +66,7 @@ def update_statcast(date: datetime.date, refresh: bool = False) -> int:
             end_dt=date.strftime("%Y-%m-%d"),
         ),
         schema_overrides=STATCAST_SCHEMA,
-    ).with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+    ).with_columns(pl.col("game_date").cast(pl.Date).alias("game_date"))
 
     updated_df = pl.concat([old_df.collect(), new_df], how="diagonal_relaxed")
     updated_df.write_parquet(LOCAL_STATCAST_DATA_LOC)

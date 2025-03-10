@@ -1,14 +1,9 @@
-import sys
-import os
-
-sys.path.append(os.path.abspath(".."))
-
 import polars as pl
 import statcast_pitches
 from update.schema import STATCAST_SCHEMA
 
 
-def test_load_all_eager() -> None:
+def test_lazy_schema() -> None:
     df = statcast_pitches.load()
 
     assert isinstance(df, pl.LazyFrame)
@@ -17,7 +12,7 @@ def test_load_all_eager() -> None:
 
 def test_load_query() -> None:
     params = ("2024",)
-    test_query = f"""
+    test_query = """
         SELECT game_date, bat_speed, swing_length
         FROM pitches
         WHERE

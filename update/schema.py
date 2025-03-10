@@ -4,7 +4,7 @@ import polars as pl
 # statcast data types: https://baseballsavant.mlb.com/csv-docs
 __all__ = ["STATCAST_SCHEMA"]
 
-DATE_FEATURES = {"game_date": pl.Datetime}
+DATE_FEATURES = {"game_date": pl.Date}
 
 STRING_FEATURES = {
     col: pl.String
@@ -108,8 +108,8 @@ INT_FEATURES = {
         "at_bat_number",
         "pitch_number",
         "fld_score",
-        "fielder_2.1",
-        "pitcher.1",
+        # "fielder_2.1",
+        # "pitcher.1",
         "home_score",
         "away_score",
         "bat_score",
