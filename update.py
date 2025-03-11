@@ -31,10 +31,8 @@ def refresh_statcast() -> int:
             ),
             schema_overrides=STATCAST_SCHEMA,
         )
-        # .with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
-        .with_columns(
-            pl.col("game_date").cast(pl.Date).alias("game_date")
-        ).write_parquet(LOCAL_STATCAST_DATA_LOC)
+        .with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
+        .write_parquet(LOCAL_STATCAST_DATA_LOC)
     )
 
     if not os.path.exists(LOCAL_STATCAST_DATA_LOC):
@@ -77,6 +75,7 @@ def update_statcast(date: datetime.date, refresh: bool = False) -> int:
 
 
 def upload_to_hf() -> None:
+    assert HF_TOKEN is not None, "missing huggingface token"
     api = HfApi(token=HF_TOKEN)
     api.upload_file(
         path_or_fileobj=LOCAL_STATCAST_DATA_LOC,
