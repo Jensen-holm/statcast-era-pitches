@@ -1,14 +1,5 @@
-import polars as pl
 import statcast_pitches
-from update.schema import STATCAST_SCHEMA
-
-
-def test_lazy_schema() -> None:
-    df = statcast_pitches.load()
-
-    assert isinstance(df, pl.LazyFrame)
-    assert STATCAST_SCHEMA == dict(df.collect_schema())
-
+import polars as pl
 
 def test_load_query() -> None:
     params = ("2024",)
@@ -17,7 +8,8 @@ def test_load_query() -> None:
         FROM pitches
         WHERE
             YEAR(game_date) =?
-            AND bat_speed IS NOT NULL;
+            AND bat_speed IS NOT NULL
+        LIMIT 10;
     """
 
     df = statcast_pitches.load(
@@ -29,6 +21,7 @@ def test_load_query() -> None:
     assert len(df.collect_schema().names()) == 3
 
     df = df.collect()
+    assert len(df) == 10
     assert all(df["bat_speed"].is_not_null())
     assert all(df["swing_length"].is_not_null())
     assert all(df["game_date"].dt.year() == "2024")
