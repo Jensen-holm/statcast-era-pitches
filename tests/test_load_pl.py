@@ -7,7 +7,7 @@ def test_lazy_schema() -> None:
     df = statcast_pitches.load()
 
     assert isinstance(df, pl.LazyFrame)
-    assert STATCAST_SCHEMA == df.collect_schema()
+    assert STATCAST_SCHEMA == dict(df.collect_schema())
 
 
 def test_load_query() -> None:

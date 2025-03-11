@@ -32,8 +32,9 @@ def refresh_statcast() -> int:
             schema_overrides=STATCAST_SCHEMA,
         )
         # .with_columns(pl.col("game_date").cast(pl.Datetime("us")).alias("game_date"))
-        .with_columns(pl.col("game_date").cast(pl.Date).alias("game_date"))
-        .write_parquet(LOCAL_STATCAST_DATA_LOC)
+        .with_columns(
+            pl.col("game_date").cast(pl.Date).alias("game_date")
+        ).write_parquet(LOCAL_STATCAST_DATA_LOC)
     )
 
     if not os.path.exists(LOCAL_STATCAST_DATA_LOC):
