@@ -1,13 +1,17 @@
-from huggingface_hub import HfApi
-from enum import Enum
 import polars as pl
 import pybaseball
 import datetime
 import logging
 import os
 
-from update.utils import LOCAL_STATCAST_DATA_LOC, HF_DATASET_LOC
 from update.schema import STATCAST_SCHEMA
+from update.utils import (
+    LOCAL_STATCAST_DATA_LOC,
+    HF_DATASET_LOC,
+    UpdateFlag,
+    upload_to_hf,
+    yesterday,
+)
 
 # pybaesball has some pandas code that generates some warnings.
 # why should I pay for the sins of pybaseball?
@@ -16,17 +20,9 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-HF_TOKEN = os.environ.get("HF_TOKEN")
 
 
-class UpdateFlag(Enum):
-    COMPLETE = 0
-    NOT_NEEDED = 1
-    ERROR = 2
 
-
-def yesterday() -> datetime.date:
-    return datetime.datetime.now().date() - datetime.timedelta(days=1)
 
 
 def update_statcast(date: datetime.date) -> UpdateFlag:
@@ -67,35 +63,19 @@ def update_statcast(date: datetime.date) -> UpdateFlag:
     return UpdateFlag.COMPLETE
 
 
-def upload_to_hf() -> None:
-    api = HfApi(token=HF_TOKEN)
-    api.upload_file(
-        path_or_fileobj=LOCAL_STATCAST_DATA_LOC,
-        path_in_repo="data/statcast_era_pitches.parquet",
-        repo_id="Jensen-holm/statcast-era-pitches",
-        repo_type="dataset",
-    )
-
-
 if __name__ == "__main__":
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
 
     parser.add_argument(
-        "-refresh",
-        type=bool,
-        default=False,
-        help="whether or not to refresh the data base by reloading all statcast data",
-    )
-
-    parser.add_argument(
         "-date",
         type=datetime.date.fromisoformat,
         default=yesterday(),
-        help="if refresh is false, then this program will check for new data up to this date",
+        help="check for new data up to this date",
     )
 
-    # if it runs without errors (if there was a problem, this fn returns 1, else 0)
-    if not update_statcast(**parser.parse_args().__dict__):
-        _ = upload_to_hf()
+    if (r := update_statcast(**parser.parse_args().__dict__)) == UpdateFlag.COMPLETE:
+        hf_tok = os.environ.get("HF_TOKEN")
+        assert hf_tok is not None, f"bad huggingface token |{hf_tok}|"
+        _ = upload_to_hf(hf_tok)
