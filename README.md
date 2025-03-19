@@ -15,7 +15,7 @@ You can explore the entire dataset in your browser [at this link](https://huggin
 ### With statcast_pitches package
 
 ```bash
-pip install git+https://github.com/Jensen-holm/statcast-era-pitches.git
+pip install statcast-pitches
 ```
 
 **Example 1 w/ polars (suggested)**
