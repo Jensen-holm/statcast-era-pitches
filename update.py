@@ -20,11 +20,6 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-
-
-
-
-
 def update_statcast(date: datetime.date) -> UpdateFlag:
     """Updates the statcast DataFrame with data from last date, to the date argument"""
     old_df = pl.scan_parquet(HF_DATASET_LOC)
