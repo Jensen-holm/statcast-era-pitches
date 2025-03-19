@@ -1,4 +1,4 @@
-# statcast-era-pitches
+# statcast-pitches
 
 [![Latest Update](https://github.com/Jensen-holm/statcast-era-pitches/actions/workflows/update_statcast_data.yml/badge.svg)](https://github.com/Jensen-holm/statcast-era-pitches/actions/workflows/update_statcast_data.yml)
 
@@ -6,17 +6,19 @@
  
 The point of this repository is to utilize GitHub Actions to scrape new baseball data weekly during the MLB season, and update a parquet file hosted as a huggingface dataset. Reading this data as a huggingface dataset is much faster than scraping the new data each time you re run your code, or just want updated statcast pitch data in general.
 
-The `main.py` script updates each week during the MLB season, updating the [statcast-era-pitches HuggingFace Dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) so that you don't have to re scrape this data yourself. 
+The `update.py` script updates each week during the MLB season, updating the [statcast-era-pitches HuggingFace Dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) so that you don't have to re scrape this data yourself. 
 
 You can explore the entire dataset in your browser [at this link](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/viewer/default/train)
 
-# Usage
-
-### With statcast_pitches package
+# Installation
 
 ```bash
 pip install statcast-pitches
 ```
+
+# Usage
+
+### With statcast_pitches package
 
 **Example 1 w/ polars (suggested)**
 ```python
@@ -31,7 +33,16 @@ bat_speed_24_df = (pitches_lf
                     .filter(pl.col("game_date").dt.year() == 2024)
                     .select("bat_speed", "swing_length")
                     .collect())
+
+print(bat_speed_24_df.head(3))
 ```
+
+output: 
+| | bat_speed  | swing_length |
+|-|------------|--------------|
+| 0 | 73.61710 | 6.92448 |
+| 1 | 58.63812 | 7.56904 |
+| 2 | 71.71226 | 6.46088 |
 
 **Notes**
 - Because `statcast_pitches.load()` uses a LazyFrame, we can load it much faster and even perform operations on it before 'collecting' it into memory. If it were loaded as a DataFrame, this code would execute in ~30-60 seconds, instead it runs between 2-8 seconds. 
@@ -50,13 +61,12 @@ query_2024_bat_speed = f"""
         AND bat_speed IS NOT NULL;
     """
 
-if __name__ == "__main__":
-    bat_speed_24_df = statcast_pitches.load(
-        query=query_2024_bat_speed,
-        params=params,
-    ).collect()
+bat_speed_24_df = statcast_pitches.load(
+    query=query_2024_bat_speed,
+    params=params,
+).collect()
 
-    print(bat_speed_24_df.head(3))
+print(bat_speed_24_df.head(3))
 ```
 
 output: 
@@ -72,7 +82,7 @@ output:
 - Since `load()` returns a LazyFrame, notice that I had to call `pl.DataFrame.collect()` before calling `head()`
 - This is slower than the other polars approach, however sometimes using SQL is fun
 
-### With HuggingFace API
+### With HuggingFace API (not recommended)
 
 ***Pandas***
 
@@ -126,3 +136,11 @@ see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitch
 | 26.899 | polars |
 | 33.093 | pandas |
 | 68.692 | duckdb |
+
+# ⚠️ Data-Quality Warning ⚠️
+
+MLB states that real time `pitch_type` classification is automated and subject to change as data gets reviewed. This is currently not taken into account as the huggingface dataset gets updated. `pitch_type` is the only column that is affected by this.
+
+# Contributing
+
+Feel free to submit issues and PR's if you have a contribution you would like to make.

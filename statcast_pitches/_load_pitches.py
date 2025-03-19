@@ -3,7 +3,11 @@ from typing import Optional, Tuple
 import polars as pl
 import duckdb
 
-from ._utils import *
+from ._utils import (
+    HF_DATASET_LOC,
+    INSTALL_DB_REQS_QUERY,
+    REGISTER_QUERY,
+)
 
 __all__ = ["load"]
 
