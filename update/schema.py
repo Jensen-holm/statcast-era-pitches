@@ -79,6 +79,12 @@ FLOAT_FEATURES = {
         "hyper_speed",
         "delta_pitcher_run_exp",
         "estimated_slg_using_speedangle",
+        # new with bat path update
+        "attack_angle",
+        "attack_direction",
+        "swing_path_tilt",
+        "intercept_ball_minus_batter_pos_x_inches",
+        "intercept_ball_minus_batter_pos_y_inches",
     ]
 }
 
