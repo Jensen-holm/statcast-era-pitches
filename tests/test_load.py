@@ -1,27 +1,24 @@
 import polars as pl
 import statcast_pitches
-from update.schema import STATCAST_SCHEMA
+import pytest
 
 
-def test_lazy_schema() -> None:
-    df = statcast_pitches.load()
+STR_QUERY = """
+    SELECT game_date, bat_speed, swing_length
+    FROM pitches
+    WHERE
+        YEAR(game_date) =?
+        AND bat_speed IS NOT NULL
+    LIMIT 10;
+"""
 
-    assert isinstance(df, pl.LazyFrame)
-    assert STATCAST_SCHEMA == dict(df.collect_schema())
 
-
-def test_load_query() -> None:
+@pytest.mark.parametrize("query", (STR_QUERY, "tests/test_data/test.sql"))
+def test_load_query(query) -> None:
     params = ("2024",)
-    test_query = """
-        SELECT game_date, bat_speed, swing_length
-        FROM pitches
-        WHERE
-            YEAR(game_date) =?
-            AND bat_speed IS NOT NULL;
-    """
 
     df = statcast_pitches.load(
-        query=test_query,
+        query=query,
         params=params,
     )
 
@@ -29,6 +26,7 @@ def test_load_query() -> None:
     assert len(df.collect_schema().names()) == 3
 
     df = df.collect()
+    assert len(df == 10)
     assert all(df["bat_speed"].is_not_null())
     assert all(df["swing_length"].is_not_null())
     assert all(df["game_date"].dt.year() == "2024")

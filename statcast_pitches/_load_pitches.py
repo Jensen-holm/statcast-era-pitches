@@ -7,6 +7,7 @@ from ._utils import (
     HF_DATASET_LOC,
     INSTALL_DB_REQS_QUERY,
     REGISTER_QUERY,
+    read_sql,
 )
 
 __all__ = ["load"]
@@ -50,6 +51,9 @@ def load(query: Optional[str] = None, params: Optional[Tuple] = None) -> pl.Lazy
     """
     if query is None:
         return pl.scan_parquet(HF_DATASET_LOC)
+
+    if (f := read_sql(query)) is not None:
+        query = f
 
     with duckdb.connect() as con:
         _ = con.execute(INSTALL_DB_REQS_QUERY)
