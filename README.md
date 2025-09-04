@@ -125,5 +125,5 @@ see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitch
 | 33.093              | pandas     |
 | 68.692              | duckdb     |
 
-[!WARNING] 
+[!WARNING]
 MLB states that real time `pitch_type` classification is automated and subject to change as data gets reviewed. This is currently not taken into account as the huggingface dataset gets updated. `pitch_type` is not the only column affected by this.
