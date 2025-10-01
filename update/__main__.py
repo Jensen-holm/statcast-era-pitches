@@ -4,8 +4,8 @@ import datetime
 import logging
 import os
 
-from update.schema import STATCAST_SCHEMA
-from update.utils import (
+from schema import STATCAST_SCHEMA
+from _utils import (
     LOCAL_STATCAST_DATA_LOC,
     HF_DATASET_LOC,
     UpdateFlag,
@@ -19,10 +19,11 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
+HF_TOKEN = os.environ['HF_TOKEN']
 
 def update_statcast(date: datetime.date) -> UpdateFlag:
     """Updates the statcast DataFrame with data from last date, to the date argument"""
-    old_df = pl.scan_parquet(HF_DATASET_LOC)
+    old_df = pl.scan_parquet(HF_DATASET_LOC, storage_options={'token': HF_TOKEN})
     latest_date = (
         old_df.select("game_date")
         .sort(by="game_date", descending=True)
@@ -71,6 +72,4 @@ if __name__ == "__main__":
     )
 
     if (r := update_statcast(**parser.parse_args().__dict__)) == UpdateFlag.COMPLETE:
-        hf_tok = os.environ.get("HF_TOKEN")
-        assert hf_tok is not None, f"bad huggingface token |{hf_tok}|"
-        _ = upload_to_hf(hf_tok)
+        _ = upload_to_hf(HF_TOKEN)
