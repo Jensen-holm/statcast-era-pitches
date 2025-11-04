@@ -2,28 +2,24 @@ import polars as pl
 import pybaseball
 import datetime
 import logging
-import os
 
-from schema import STATCAST_SCHEMA
-from _utils import (
+from .schema import STATCAST_SCHEMA
+from ._utils import (
     LOCAL_STATCAST_DATA_LOC,
-    HF_DATASET_LOC,
+    DATASET_LOC,
     UpdateFlag,
-    upload_to_hf,
     yesterday,
 )
 
-# pybaesball has some pandas code that generates some warnings.
-# why should I pay for the sins of pybaseball?
+# pybaseball has some pandas code that generates some warnings
 import warnings
 
 warnings.filterwarnings("ignore")
 
-HF_TOKEN = os.environ['HF_TOKEN']
 
 def update_statcast(date: datetime.date) -> UpdateFlag:
     """Updates the statcast DataFrame with data from last date, to the date argument"""
-    old_df = pl.scan_parquet(HF_DATASET_LOC, storage_options={'token': HF_TOKEN})
+    old_df = pl.scan_parquet(DATASET_LOC)
     latest_date = (
         old_df.select("game_date")
         .sort(by="game_date", descending=True)
@@ -63,7 +59,6 @@ if __name__ == "__main__":
     from argparse import ArgumentParser
 
     parser = ArgumentParser()
-
     parser.add_argument(
         "-date",
         type=datetime.date.fromisoformat,
@@ -71,5 +66,5 @@ if __name__ == "__main__":
         help="check for new data up to this date",
     )
 
-    if (r := update_statcast(**parser.parse_args().__dict__)) == UpdateFlag.COMPLETE:
-        _ = upload_to_hf(HF_TOKEN)
+    if update_statcast(**parser.parse_args().__dict__) == UpdateFlag.COMPLETE:
+        print("successfully updated statcast data")
