@@ -4,15 +4,12 @@
 
 [pybaseball](https://github.com/jldbc/pybaseball) is a great tool for downloading baseball data. Even though the library is optimized and scrapes this data in parallel, it can be time consuming.
 
-The point of this repository is to utilize GitHub Actions to scrape new baseball data weekly during the MLB season, and update a parquet file hosted as a huggingface dataset. Reading this data as a huggingface dataset is much faster than scraping the new data each time you re run your code, or just want updated statcast pitch data in general.
+The point of this repository is to utilize GitHub Actions to scrape new baseball data daily during the MLB season and update a parquet file hosted directly in this repository. Reading this data from GitHub is much faster than scraping the new data each time you re-run your code, or just want updated statcast pitch data in general.
 
-The `update.py` script updates each week during the MLB season, updating the [statcast-era-pitches HuggingFace Dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) so that you don't have to re scrape this data yourself.
-
-> [!NOTE]
-> You can explore the entire dataset in your browser [at this link](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/viewer/default/train)
+The `update.py` script updates daily during the MLB season, keeping the Parquet file in this repository up to date so that you don't have to re-scrape this data yourself.
 
 > [!WARNING]
-> MLB states that real time `pitch_type` classification is automated and subject to change as data gets reviewed. This is currently not taken into account as the huggingface dataset gets updated. `pitch_type` is not the only column affected by this.
+> MLB states that real time `pitch_type` classification is automated and subject to change as data gets reviewed. This is currently not taken into account as the dataset gets updated. `pitch_type` is not the only column affected by this.
 
 # Installation
 
@@ -98,7 +95,7 @@ If you want to get this data into R or SQL without writing polars first ...
 
 ``` sql
 SELECT *
-FROM 'hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet';
+FROM 'https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/main/data/statcast_era_pitches.parquet';
 ```
 
 ***Tidyverse***
@@ -107,11 +104,9 @@ FROM 'hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.p
 library(tidyverse)
 
 statcast_pitches <- read_parquet(
-    "https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches/resolve/main/data/statcast_era_pitches.parquet"
+    "https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/main/data/statcast_era_pitches.parquet"
 )
 ```
-
-see the [dataset](https://huggingface.co/datasets/Jensen-holm/statcast-era-pitches) on HugingFace itself for more details.
 
 ## Benchmarking
 

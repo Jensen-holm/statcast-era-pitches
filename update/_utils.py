@@ -1,4 +1,3 @@
-from huggingface_hub.hf_api import HfApi
 from enum import Enum
 import datetime
 import os
@@ -8,7 +7,6 @@ __all__ = [
     "DATASET_LOC",
     "UpdateFlag",
     "yesterday",
-    "upload_to_hf",
 ]
 
 LOCAL_STATCAST_DATA_LOC = os.path.join(
@@ -32,13 +30,3 @@ class UpdateFlag(Enum):
 
 def yesterday() -> datetime.date:
     return datetime.datetime.now().date() - datetime.timedelta(days=1)
-
-
-def upload_to_hf(hf_tok: str) -> None:
-    api = HfApi(token=hf_tok)
-    api.upload_file(
-        path_or_fileobj=LOCAL_STATCAST_DATA_LOC,
-        path_in_repo="data/statcast_era_pitches.parquet",
-        repo_id="Jensen-holm/statcast-era-pitches",
-        repo_type="dataset",
-    )
