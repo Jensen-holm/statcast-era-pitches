@@ -4,7 +4,7 @@ import polars as pl
 import duckdb
 
 from ._utils import (
-    HF_DATASET_LOC,
+    DATASET_LOC,
     INSTALL_DB_REQS_QUERY,
     REGISTER_QUERY,
     read_sql,
@@ -50,7 +50,7 @@ def load(query: Optional[str] = None, params: Optional[Tuple] = None) -> pl.Lazy
         )
     """
     if query is None:
-        return pl.scan_parquet(HF_DATASET_LOC)
+        return pl.scan_parquet(DATASET_LOC)
 
     if (f := read_sql(query)) is not None:
         query = f
