@@ -4,8 +4,7 @@ import os
 __all__ = ["DATASET_LOC", "INSTALL_DB_REQS_QUERY", "REGISTER_QUERY", "read_sql"]
 
 DATASET_LOC = (
-    # "hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet"
-    "https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/main/data/statcast_era_pitches.parquet"
+    "https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/gh_migration/data/statcast_era_pitches.parquet"
 )
 
 

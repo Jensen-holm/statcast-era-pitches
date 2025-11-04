@@ -18,7 +18,8 @@ LOCAL_STATCAST_DATA_LOC = os.path.join(
 
 DATASET_LOC = (
     # "hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet"
-    "https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/main/data/statcast_era_pitches.parquet"
+    # "https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/main/data/statcast_era_pitches.parquet"
+    "https://github.com/Jensen-holm/statcast-era-pitches/blob/gh_migration/data/statcast_era_pitches.parquet"
 )
 
 
