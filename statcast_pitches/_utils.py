@@ -1,10 +1,11 @@
 from typing import Optional
 import os
 
-__all__ = ["HF_DATASET_LOC", "INSTALL_DB_REQS_QUERY", "REGISTER_QUERY", "read_sql"]
+__all__ = ["DATASET_LOC", "INSTALL_DB_REQS_QUERY", "REGISTER_QUERY", "read_sql"]
 
-HF_DATASET_LOC = (
-    "hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet"
+DATASET_LOC = (
+    # "hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet"
+    "https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/main/data/statcast_era_pitches.parquet"
 )
 
 
@@ -16,7 +17,7 @@ INSTALL_DB_REQS_QUERY = """
 
 REGISTER_QUERY = f"""
     CREATE VIEW pitches AS 
-    SELECT * FROM parquet_scan('{HF_DATASET_LOC}');
+    SELECT * FROM parquet_scan('{DATASET_LOC}');
 """
 
 

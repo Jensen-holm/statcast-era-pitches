@@ -7,7 +7,7 @@ import os
 from schema import STATCAST_SCHEMA
 from _utils import (
     LOCAL_STATCAST_DATA_LOC,
-    HF_DATASET_LOC,
+    DATASET_LOC,
     UpdateFlag,
     upload_to_hf,
     yesterday,
@@ -19,11 +19,12 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-HF_TOKEN = os.environ['HF_TOKEN']
+HF_TOKEN = os.environ["HF_TOKEN"]
+
 
 def update_statcast(date: datetime.date) -> UpdateFlag:
     """Updates the statcast DataFrame with data from last date, to the date argument"""
-    old_df = pl.scan_parquet(HF_DATASET_LOC, storage_options={'token': HF_TOKEN})
+    old_df = pl.scan_parquet(DATASET_LOC, storage_options={"token": HF_TOKEN})
     latest_date = (
         old_df.select("game_date")
         .sort(by="game_date", descending=True)

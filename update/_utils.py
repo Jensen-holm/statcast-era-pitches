@@ -5,7 +5,7 @@ import os
 
 __all__ = [
     "LOCAL_STATCAST_DATA_LOC",
-    "HF_DATASET_LOC",
+    "DATASET_LOC",
     "UpdateFlag",
     "yesterday",
     "upload_to_hf",
@@ -18,8 +18,9 @@ LOCAL_STATCAST_DATA_LOC = os.path.join(
     "statcast_era_pitches.parquet",
 )
 
-HF_DATASET_LOC = (
-    "hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet"
+DATASET_LOC = (
+    # "hf://datasets/Jensen-holm/statcast-era-pitches/data/statcast_era_pitches.parquet"
+    "https://raw.githubusercontent.com/Jensen-holm/statcast-era-pitches/main/data/statcast_era_pitches.parquet"
 )
 
 
